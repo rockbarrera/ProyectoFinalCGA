@@ -1,41 +1,18 @@
 ﻿  TimeManager.cpp
   Texture.cpp
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\texture.h(10): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   Sphere.cpp
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\sphere.cpp(42): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\sphere.cpp(46): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\definition.h(11): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
   Shader.cpp
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\shader.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   Model.cpp
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\model.cpp(25): warning C4018: '<': no coinciden signed/unsigned
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\mesh.h(18): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   Mesh.cpp
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\mesh.h(18): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   main.cpp
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\headers\inputmanager.h(87): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\main.cpp(199): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\main.cpp(204): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\main.cpp(211): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\main.cpp(210): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\main.cpp(221): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\main.cpp(370): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\main.cpp(2): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   InputManager.cpp
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\headers\inputmanager.h(87): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\inputmanager.cpp(72): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\inputmanager.cpp(73): warning C4244: '=': conversión de 'float' a 'int'; posible pérdida de datos
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\inputmanager.h(5): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
   CubemapTexture.cpp
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\cubemaptexture.h(12): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   Generando código...
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\inputmanager.cpp(36): warning C4715: 'InputManager::toApplicationState': no todas las rutas de acceso de control devuelven un valor
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\inputmanager.cpp(27): warning C4715: 'InputManager::toApplicationKey': no todas las rutas de acceso de control devuelven un valor
-c:\users\rodrigo barrera .laptop-msl677j2\documents\visual studio 2017\projects\proyecto final cga\proyecto final cga\src\inputmanager.cpp(47): warning C4715: 'InputManager::toMouseButtonIndex': no todas las rutas de acceso de control devuelven un valor
-glfw3.lib(context.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(context.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(init.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(init.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(input.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(input.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(monitor.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(monitor.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(vulkan.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(vulkan.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(window.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(window.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(win32_init.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(win32_init.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(win32_joystick.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(win32_joystick.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(win32_monitor.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(win32_monitor.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(win32_time.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(win32_time.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(win32_tls.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(win32_tls.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(win32_window.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(win32_window.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(wgl_context.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(wgl_context.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-glfw3.lib(egl_context.obj) : warning LNK4099: no se encontró PDB 'glfw.pdb' con 'glfw3.lib(egl_context.obj)' o en 'C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\glfw.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-  Proyecto Final CGA.vcxproj -> C:\Users\Rodrigo Barrera .LAPTOP-MSL677J2\Documents\Visual Studio 2017\Projects\Proyecto Final CGA\Debug\Proyecto Final CGA.exe
