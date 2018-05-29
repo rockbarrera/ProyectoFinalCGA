@@ -51,6 +51,8 @@ struct VertexTexture {
 	glm::vec2 m_TexCoord;
 };
 
+glm::vec3 posPiso[100];
+
 int screenWidth;
 int screenHeight;
 
@@ -223,9 +225,17 @@ bool processInput(bool continueApplication) {
 	return continueApplication;
 }
 
+void asigVert(int A) {
+	int B = 2 * A;
+	for (int i = 0; i < B; i++) {
+		posPiso[i] = glm::vec3( (float)(-A+i), 0.0f, 0.0f);
+	}
+}
+
 void applicationLoop() {
 	bool psi = true;
 
+	asigVert(20);
 	glm::vec3 cubePositions[] =
 	{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f),
@@ -395,9 +405,10 @@ void applicationLoop() {
 		//glm::vec3(1.0f, 0.0f, 0.0f));
 		glBindVertexArray(VAO);
 
-		for (GLint i = 0; i < 9; i++) {
+		for (GLint i = 0; i < 40; i++) {
 			glm::mat4 model;
-			model = glm::translate(model, cubePositions[i]);
+			model = glm::translate(model, posPiso[i]);
+			//model = glm::translate(model, cubePositions[i]);
 			//model = glm::rotate(model, 0.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawArrays(GL_TRIANGLES, 0, 6);
