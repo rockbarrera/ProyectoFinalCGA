@@ -51,7 +51,7 @@ struct VertexTexture {
 	glm::vec2 m_TexCoord;
 };
 
-glm::vec3 posPiso[100];
+glm::vec3 *posPiso;
 
 int screenWidth;
 int screenHeight;
@@ -227,15 +227,17 @@ bool processInput(bool continueApplication) {
 
 void asigVert(int A) {
 	int B = 2 * A;
+	posPiso = new glm::vec3[B*B];
 	for (int i = 0; i < B; i++) {
-		posPiso[i] = glm::vec3( (float)(-A+i), 0.0f, 0.0f);
+		for (int j = 0; j < B; j++)
+			posPiso[B*i + j] = glm::vec3( (float)(-A+i), 0.0f, (float)(-A+j));
 	}
 }
 
 void applicationLoop() {
 	bool psi = true;
 
-	asigVert(20);
+	asigVert(15);
 	glm::vec3 cubePositions[] =
 	{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f),
@@ -405,7 +407,7 @@ void applicationLoop() {
 		//glm::vec3(1.0f, 0.0f, 0.0f));
 		glBindVertexArray(VAO);
 
-		for (GLint i = 0; i < 40; i++) {
+		for (GLint i = 0; i < 900; i++) {
 			glm::mat4 model;
 			model = glm::translate(model, posPiso[i]);
 			//model = glm::translate(model, cubePositions[i]);
