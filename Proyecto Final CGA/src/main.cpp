@@ -188,6 +188,7 @@ void destroy() {
 	lampShader.destroy();
 	cubemapShader.destroy();
 	envCubeShader.destroy();
+	shader.destroy();
 	delete cubeMaptexture;
 }
 
