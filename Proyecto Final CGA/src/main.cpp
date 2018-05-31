@@ -40,7 +40,7 @@ Model modelo1;
 
 Texture textureDifuse(GL_TEXTURE_2D, "../Textures/container2.png");
 Texture textureSpecular(GL_TEXTURE_2D, "../Textures/container2_specular.png");
-CubemapTexture * cubeMaptexture = new CubemapTexture("../Textures/mp_bloodvalley", "blood-valley_ft.tga", "blood-valley_bk.tga", "blood-valley_up.tga", "blood-valley_dn.tga", "blood-valley_rt.tga", "blood-valley_lf.tga");
+CubemapTexture * cubeMaptexture = new CubemapTexture("../Textures/mp_pr", "pr_ft.tga", "pr_bk.tga", "pr_up.tga", "pr_dn.tga", "pr_rt.tga", "pr_lf.tga");
 //Para el plano
 Texture * texturaPlano;
 
@@ -259,11 +259,9 @@ void applicationLoop() {
 		projection = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 
 		/*lightingShader.turnOn();
-
 		GLint viewPosLoc = lightingShader.getUniformLocation("viewPos");
 		glUniform3f(viewPosLoc, inputManager.getCameraFPS()->Position.x, inputManager.getCameraFPS()->Position.y,
 			inputManager.getCameraFPS()->Position.z);
-
 		// Set material properties
 		GLint matDiffuseLoc = lightingShader.getUniformLocation(
 			"material.diffuse");
@@ -274,7 +272,6 @@ void applicationLoop() {
 		glUniform1i(matDiffuseLoc, 0);
 		glUniform1i(matSpecularLoc, 1);
 		glUniform1f(matShineLoc, 32.0f);
-
 		// Set lights properties
 		GLint lightAmbientLoc = lightingShader.getUniformLocation(
 			"light.ambient");
@@ -287,7 +284,6 @@ void applicationLoop() {
 		glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f); // Let's darken the light a bit to fit the scene
 		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
 		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-
 		// Get the uniform locations
 		GLint modelLoc = lightingShader.getUniformLocation("model");
 		GLint viewLoc = lightingShader.getUniformLocation("view");
@@ -295,18 +291,14 @@ void applicationLoop() {
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
 		// Draw a sphere
 		glm::mat4 model;
 		model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
 		textureDifuse.bind(GL_TEXTURE0);
-
 		sp2.render();
 		//modelo1.render(&lightingShader);
 		lightingShader.turnOff();
-
 		lampShader.turnOn();
 		// Create transformations
 		modelLoc = lampShader.getUniformLocation("model");
@@ -315,7 +307,6 @@ void applicationLoop() {
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
 		model = glm::translate(glm::mat4(), lightPos);
 		model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
