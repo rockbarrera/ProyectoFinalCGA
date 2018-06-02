@@ -403,13 +403,14 @@ void applicationLoop() {
 		// Create transformations
 
 		GLfloat timeValue = TimeManager::Instance().GetTime() - lastTime;
-		GLfloat trasladoSen = (sin(timeValue)) + 0.5;
-		GLfloat trasladoCos = (cos(timeValue)) + 0.5;
+		GLfloat trasladoSen = (sin(timeValue));
+		GLfloat trasladoCos = (cos(timeValue));
+
 
 		GLint offset_y = lampShader.getUniformLocation("offset_y");
-		glUniform1f(offset_y, trasladoSen - 0.5f);
+		glUniform1f(offset_y, 4*trasladoSen);
 		GLint offset_z = lampShader.getUniformLocation("offset_z");
-		glUniform1f(offset_z, trasladoCos - 0.5f);
+		glUniform1f(offset_z, 4*trasladoCos);
 
 		modelLoc = lampShader.getUniformLocation("model");
 		viewLoc = lampShader.getUniformLocation("view");
