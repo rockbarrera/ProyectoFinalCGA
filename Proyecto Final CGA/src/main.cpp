@@ -360,7 +360,6 @@ void applicationLoop() {
 
 		shader.turnOn();
 
-		GLfloat timeValue = TimeManager::Instance().GetTime() - lastTime;
 
 		// Bind Texture
 		texturaPlano->bind(GL_TEXTURE0);
@@ -402,6 +401,16 @@ void applicationLoop() {
 
 		lampShader.turnOn();
 		// Create transformations
+
+		GLfloat timeValue = TimeManager::Instance().GetTime() - lastTime;
+		GLfloat trasladoSen = (sin(timeValue)) + 0.5;
+		GLfloat trasladoCos = (cos(timeValue)) + 0.5;
+
+		GLint offset_y = lampShader.getUniformLocation("offset_y");
+		glUniform1f(offset_y, trasladoSen - 0.5f);
+		GLint offset_z = lampShader.getUniformLocation("offset_z");
+		glUniform1f(offset_z, trasladoCos - 0.5f);
+
 		modelLoc = lampShader.getUniformLocation("model");
 		viewLoc = lampShader.getUniformLocation("view");
 		projLoc = lampShader.getUniformLocation("projection");
