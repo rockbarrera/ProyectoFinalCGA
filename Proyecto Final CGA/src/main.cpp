@@ -28,6 +28,7 @@
 
 Sphere sp(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
 Sphere sp2(1.5, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
+Sphere sol(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
 
 Shader lightingShader;
 Shader lampShader;
@@ -246,7 +247,7 @@ void applicationLoop() {
 		glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, -1.0f),
 		glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, -1.0f) };
 
-	glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+	glm::vec3 lightPos(0.0f, 10.0f, 0.0f);
 	double lastTime = TimeManager::Instance().GetTime();
 
 	while (psi) {
@@ -300,19 +301,7 @@ void applicationLoop() {
 		sp2.render();
 		//modelo1.render(&lightingShader);
 		lightingShader.turnOff();
-		lampShader.turnOn();
-		// Create transformations
-		modelLoc = lampShader.getUniformLocation("model");
-		viewLoc = lampShader.getUniformLocation("view");
-		projLoc = lampShader.getUniformLocation("projection");
-		// Pass the matrices to the shader
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-		model = glm::translate(glm::mat4(), lightPos);
-		model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		sp.render();
-		lampShader.turnOff();*/
+		*/
 
 		cubemapShader.turnOn();
 
@@ -408,6 +397,23 @@ void applicationLoop() {
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
 		shader.turnOff();
+
+		//Creacion del sol y su giro
+
+		lampShader.turnOn();
+		// Create transformations
+		modelLoc = lampShader.getUniformLocation("model");
+		viewLoc = lampShader.getUniformLocation("view");
+		projLoc = lampShader.getUniformLocation("projection");
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		model = glm::translate(glm::mat4(), lightPos);
+		model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		sp.render();
+		lampShader.turnOff();
 
 		glfwSwapBuffers(window);
 	}
