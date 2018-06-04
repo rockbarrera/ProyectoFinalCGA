@@ -247,7 +247,7 @@ void applicationLoop() {
 		glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, -1.0f),
 		glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, -1.0f) };
 
-	glm::vec3 lightPos(0.0f, 10.0f, 0.0f);
+	glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 	double lastTime = TimeManager::Instance().GetTime();
 
 	while (psi) {
@@ -403,14 +403,14 @@ void applicationLoop() {
 		// Create transformations
 
 		GLfloat timeValue = TimeManager::Instance().GetTime() - lastTime;
-		GLfloat trasladoSen = (sin(timeValue));
-		GLfloat trasladoCos = (cos(timeValue));
+		GLfloat trasladoSen = (sin(0.1*timeValue));
+		GLfloat trasladoCos = (cos(0.1*timeValue));
 
 
 		GLint offset_y = lampShader.getUniformLocation("offset_y");
-		glUniform1f(offset_y, 4*trasladoSen);
+		glUniform1f(offset_y, 60*trasladoSen);
 		GLint offset_z = lampShader.getUniformLocation("offset_z");
-		glUniform1f(offset_z, 4*trasladoCos);
+		glUniform1f(offset_z, 60*trasladoCos);
 
 		modelLoc = lampShader.getUniformLocation("model");
 		viewLoc = lampShader.getUniformLocation("view");
