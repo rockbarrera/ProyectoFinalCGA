@@ -28,7 +28,7 @@
 
 Sphere sp(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
 Sphere sp2(1.5, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
-Sphere sol(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
+Sphere luna(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
 
 Shader lightingShader;
 Shader lampShader;
@@ -131,6 +131,9 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	sp2.init();
 	sp2.load();
+
+	luna.init();
+	luna.load();
 
 	modelo1.loadModel("../objects/cyborg/cyborg.obj");
 
@@ -358,6 +361,8 @@ void applicationLoop() {
 
 		envCubeShader.turnOff();
 
+		//Creacion del piso
+
 		shader.turnOn();
 
 
@@ -423,6 +428,33 @@ void applicationLoop() {
 		model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		sp.render();
+		lampShader.turnOff();
+
+		//Creacion de la luna
+		lampShader.turnOn();
+		// Create transformations
+
+		timeValue = TimeManager::Instance().GetTime() - lastTime;
+		trasladoSen = (sin(0.1*timeValue));
+		trasladoCos = (cos(0.1*timeValue));
+
+
+		offset_y = lampShader.getUniformLocation("offset_y");
+		glUniform1f(offset_y, -60 * trasladoSen);
+		offset_z = lampShader.getUniformLocation("offset_z");
+		glUniform1f(offset_z, -60 * trasladoCos);
+
+		modelLoc = lampShader.getUniformLocation("model");
+		viewLoc = lampShader.getUniformLocation("view");
+		projLoc = lampShader.getUniformLocation("projection");
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		model = glm::translate(glm::mat4(), lightPos);
+		model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		luna.render();
 		lampShader.turnOff();
 
 		glfwSwapBuffers(window);
