@@ -34,10 +34,13 @@ Shader lightingShader;
 Shader lampShader;
 Shader cubemapShader;
 Shader envCubeShader;
+Shader modShader;
 //Shader para renderizar el plano
 Shader shader;
-
+//Modelos
 Model modelo1;
+Model chappel;
+Model edificio[10];
 
 Texture textureDifuse(GL_TEXTURE_2D, "../Textures/container2.png");
 Texture textureSpecular(GL_TEXTURE_2D, "../Textures/container2_specular.png");
@@ -136,7 +139,15 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	luna.load();
 
 	modelo1.loadModel("../objects/cyborg/cyborg.obj");
+	edificio[2].loadModel("../objects/house_obj/house_obj.obj");
+	edificio[1].loadModel("../objects/chapel_obj/chapel_obj.obj");
+	edificio[3].loadModel("../objects/Cabaña/WoodenCabinObj.obj");
+	edificio[0].loadModel("../objects/HousF/HouseF.obj");
+	edificio[4].loadModel("../objects/domik/domik.3DS");
+	//edificio[5].loadModel("../objects/house4/CH_building1.obj");
 
+
+	modShader.initialize("../Shaders/model.vs", "../Shaders/model.fs");
 	lightingShader.initialize("../Shaders/loadModelLighting.vs", "../Shaders/loadModelLighting.fs");
 	lampShader.initialize("../Shaders/lampShader.vs", "../Shaders/lampShader.fs");
 	cubemapShader.initialize("../Shaders/cubemapTexture.vs", "../Shaders/cubemapTexture.fs");
@@ -242,7 +253,7 @@ void asigVert(int A) {
 void applicationLoop() {
 	bool psi = true;
 
-	asigVert(15);
+	asigVert(30);
 	glm::vec3 cubePositions[] =
 	{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f),
 		glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f),
@@ -369,9 +380,6 @@ void applicationLoop() {
 		// Bind Texture
 		texturaPlano->bind(GL_TEXTURE0);
 		glUniform1i(shader.getUniformLocation("textura1"), 0);
-		//texture2->bind(GL_TEXTURE1);
-		//glUniform1i(shader.getUniformLocation("textura2"), 1);
-
 		// Create transformations
 		view;
 		//glm::mat4 model;
@@ -392,7 +400,7 @@ void applicationLoop() {
 		//glm::vec3(1.0f, 0.0f, 0.0f));
 		glBindVertexArray(VAO);
 
-		for (GLint i = 0; i < 900; i++) {
+		for (GLint i = 0; i < 3600; i++) {
 			glm::mat4 model;
 			model = glm::translate(model, posPiso[i]);
 			//model = glm::translate(model, cubePositions[i]);
@@ -400,7 +408,36 @@ void applicationLoop() {
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
+
+		
 		shader.turnOff();
+
+		//Dibujo de los edificios
+
+		modShader.turnOn();
+
+		view = inputManager.getCameraFPS()->GetViewMatrix();
+		projection = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+		// Get the uniform locations
+		modelLoc = modShader.getUniformLocation("model");
+		viewLoc = modShader.getUniformLocation("view");
+		projLoc = modShader.getUniformLocation("projection");
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		glBindVertexArray(VAO);
+
+		model = glm::translate(model, posPiso[500]);
+		model = glm::translate(model, glm::vec3(0.0f,5.8f,0.0f));
+		model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
+		model = glm::rotate(model, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+		edificio[5].render(&modShader);
+		
+		//edificio[1].render(&modShader);
+
+		modShader.turnOff();
 
 		//Creacion del sol y su giro
 
