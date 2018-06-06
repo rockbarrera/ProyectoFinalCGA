@@ -433,7 +433,7 @@ void applicationLoop() {
 		model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
 		model = glm::rotate(model, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		edificio[5].render(&modShader);
+		edificio[4].render(&modShader);
 		
 		//edificio[1].render(&modShader);
 
