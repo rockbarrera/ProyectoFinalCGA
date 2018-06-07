@@ -35,6 +35,7 @@ Shader lampShader;
 Shader cubemapShader;
 Shader envCubeShader;
 Shader modShader;
+Shader modShader2;
 //Shader para renderizar el plano
 Shader shader;
 //Modelos
@@ -148,6 +149,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 
 	modShader.initialize("../Shaders/model.vs", "../Shaders/model.fs");
+	modShader2.initialize("../Shaders/model.vs", "../Shaders/model.fs");
 	lightingShader.initialize("../Shaders/loadModelLighting.vs", "../Shaders/loadModelLighting.fs");
 	lampShader.initialize("../Shaders/lampShader.vs", "../Shaders/lampShader.fs");
 	cubemapShader.initialize("../Shaders/cubemapTexture.vs", "../Shaders/cubemapTexture.fs");
@@ -372,6 +374,51 @@ void applicationLoop() {
 
 		envCubeShader.turnOff();
 
+		modShader.turnOn();
+
+		glm::mat4 model2;
+		glm::mat4 view2 = inputManager.getCameraFPS()->GetViewMatrix();
+		glm::mat4 projection2 = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+		// Get the uniform locations
+		GLint modelLoc2 = modShader.getUniformLocation("model");
+		GLint viewLoc2 = modShader.getUniformLocation("view");
+		GLint projLoc2 = modShader.getUniformLocation("projection");
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc2, 1, GL_FALSE, glm::value_ptr(view2));
+		glUniformMatrix4fv(projLoc2, 1, GL_FALSE, glm::value_ptr(projection2));
+
+		for (GLuint i = 0; i < 5; i++) {
+			if (i == 0){
+				model2 = glm::translate(model2, posPiso[500]);
+				model2 = glm::scale(model2, glm::vec3(0.8f, 0.8f, 0.8f));
+				
+			}
+			if (i == 1){
+				model2 = glm::translate(model2, posPiso[1500]);
+				model2 = glm::rotate(model2, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+				model2 = glm::scale(model2, glm::vec3(0.009f, 0.009f, 0.009f));
+			}
+			if (i == 2) {
+				model2 = glm::translate(model2, posPiso[2600]);
+				model2 = glm::scale(model2, glm::vec3(0.01f, 0.01f, 0.01f));
+			}
+			if (i == 3) {
+				model2 = glm::translate(model2, posPiso[100]);
+				model2 = glm::rotate(model2, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+				model2 = glm::scale(model2, glm::vec3(0.1f, 0.1f, 0.1f));
+			}
+			if (i == 4) {
+				model2 = glm::translate(model2, posPiso[3000]);
+				model2 = glm::translate(model2, glm::vec3(0.0f, 5.8f, 0.0f));
+				model2 = glm::rotate(model2, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+				model2 = glm::scale(model2, glm::vec3(0.005f, 0.005f, 0.005f));
+			}
+			glUniformMatrix4fv(modelLoc2, 1, GL_FALSE, glm::value_ptr(model2));
+			edificio[i].render(&modShader);
+		}
+
+		modShader.turnOff();
+
 		//Creacion del piso
 
 		shader.turnOn();
@@ -414,30 +461,7 @@ void applicationLoop() {
 
 		//Dibujo de los edificios
 
-		modShader.turnOn();
-
-		view = inputManager.getCameraFPS()->GetViewMatrix();
-		projection = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
-		// Get the uniform locations
-		modelLoc = modShader.getUniformLocation("model");
-		viewLoc = modShader.getUniformLocation("view");
-		projLoc = modShader.getUniformLocation("projection");
-		// Pass the matrices to the shader
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-
-		glBindVertexArray(VAO);
-
-		model = glm::translate(model, posPiso[500]);
-		model = glm::translate(model, glm::vec3(0.0f,5.8f,0.0f));
-		model = glm::scale(model, glm::vec3(0.005f, 0.005f, 0.005f));
-		model = glm::rotate(model, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		edificio[4].render(&modShader);
 		
-		//edificio[1].render(&modShader);
-
-		modShader.turnOff();
 
 		//Creacion del sol y su giro
 
