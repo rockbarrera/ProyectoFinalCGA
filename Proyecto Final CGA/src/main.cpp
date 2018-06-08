@@ -376,7 +376,7 @@ void applicationLoop() {
 
 		modShader.turnOn();
 
-		glm::mat4 model2;
+		
 		glm::mat4 view2 = inputManager.getCameraFPS()->GetViewMatrix();
 		glm::mat4 projection2 = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		// Get the uniform locations
@@ -388,6 +388,7 @@ void applicationLoop() {
 		glUniformMatrix4fv(projLoc2, 1, GL_FALSE, glm::value_ptr(projection2));
 
 		for (GLuint i = 0; i < 5; i++) {
+			glm::mat4 model2;
 			if (i == 0){
 				model2 = glm::translate(model2, posPiso[500]);
 				model2 = glm::scale(model2, glm::vec3(0.8f, 0.8f, 0.8f));
