@@ -1,4 +1,5 @@
-﻿  TimeManager.cpp
+﻿  main.cpp
+c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\main.cpp(2): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   Texture.cpp
 c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\texture.h(10): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   Sphere.cpp
@@ -9,8 +10,6 @@ c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinal
 c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\mesh.h(18): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   Mesh.cpp
 c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\mesh.h(18): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
-  main.cpp
-c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\main.cpp(2): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
   InputManager.cpp
 c:\users\rita\documents\visual studio 2017\projects\proyecto-final\proyectofinalcga\proyecto final cga\src\headers\inputmanager.h(5): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
   CubemapTexture.cpp
