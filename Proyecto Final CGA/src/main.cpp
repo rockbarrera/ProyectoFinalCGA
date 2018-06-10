@@ -26,9 +26,23 @@
 // Sphere include
 #include "Headers/Sphere.h"
 
+#include "Headers\collision.h"
+
 Sphere sp(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
 Sphere sp2(1.5, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
 Sphere luna(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
+
+
+//SBB para modelos
+Sphere e1(1.0, 50, 50, MODEL_MODE::VERTEX_COLOR);
+Sphere e2(1.0, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
+Sphere e3(1.0, 50, 50, MODEL_MODE::VERTEX_COLOR);
+Sphere e4(1.0, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
+Sphere e5(1.0, 50, 50, MODEL_MODE::VERTEX_COLOR);
+Sphere e6(1.0, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
+Sphere e7(1.0, 50, 50, MODEL_MODE::VERTEX_COLOR);
+Sphere e8(1.0, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
+
 
 Shader lightingShader;
 Shader lampShader;
@@ -38,14 +52,26 @@ Shader modShader;
 Shader modShader2;
 //Shader para renderizar el plano
 Shader shader;
+
 //Modelos
 Model modelo1;
 Model chappel;
 Model edificio[10];
 
+//Modelos
+Model obj1;
+Model obj2;
+Model obj3;
+Model obj4;
+Model obj5;
+Model obj6;
+Model obj7;
+Model obj8;
+Model obj9;
+
 Texture textureDifuse(GL_TEXTURE_2D, "../Textures/container2.png");
 Texture textureSpecular(GL_TEXTURE_2D, "../Textures/container2_specular.png");
-CubemapTexture * cubeMaptexture = new CubemapTexture("../Textures/mp_pr", "pr_ft.tga", "pr_bk.tga", "pr_up.tga", "pr_dn.tga", "pr_rt.tga", "pr_lf.tga");
+CubemapTexture * cubeMaptexture = new CubemapTexture("../Textures/mp_hexagon", "hexagon_ft.tga", "hexagon_bk.tga", "hexagon_up.tga", "hexagon_dn.tga", "hexagon_rt.tga", "hexagon_lf.tga");
 //Para el plano
 Texture * texturaPlano;
 
@@ -139,6 +165,32 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	luna.init();
 	luna.load();
 
+	e1.init();
+	e1.load();
+	
+	e2.init();
+	e2.load();
+	
+	e3.init();
+	e3.load();
+
+	e4.init();
+	e4.load();
+
+	e5.init();
+	e5.load();
+
+	e6.init();
+	e6.load();
+
+	e7.init();
+	e7.load();
+
+	e8.init();
+	e8.load();
+
+
+
 	modelo1.loadModel("../objects/cyborg/cyborg.obj");
 	edificio[2].loadModel("../objects/house_obj/house_obj.obj");
 	edificio[1].loadModel("../objects/chapel_obj/chapel_obj.obj");
@@ -147,6 +199,16 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	edificio[4].loadModel("../objects/domik/domik.3DS");
 	//edificio[5].loadModel("../objects/house4/CH_building1.obj");
 
+	//Modelos personas
+	obj1.loadModel("../objects/chico/Boy stand N240414.3ds");
+	obj2.loadModel("../objects/Mujer2/Moxxi.obj");
+	obj3.loadModel("../objects/casa/m15/m15.3ds");
+	obj4.loadModel("../objects/Mujer1/Girl walking N090814.3ds");
+	obj5.loadModel("../objects/Hombre1/Man N151016.3ds");
+	obj6.loadModel("../objects/gato/Cat.obj");
+	obj7.loadModel("../objects/perro/Dog.obj");  
+	//	obj8.loadModel("../objects/Mujer3/Woman 1 N150408.3ds");
+	obj9.loadModel("../objects/casa/Tree/Tree.obj");
 
 	modShader.initialize("../Shaders/model.vs", "../Shaders/model.fs");
 	modShader2.initialize("../Shaders/model.vs", "../Shaders/model.fs");
@@ -255,6 +317,19 @@ void asigVert(int A) {
 void applicationLoop() {
 	bool psi = true;
 
+
+	SBB sbb1 = getSBB(obj1.getMeshes());
+	SBB sbb2 = getSBB(obj2.getMeshes());
+	SBB sbb3 = getSBB(obj3.getMeshes());
+	SBB sbb4 = getSBB(obj4.getMeshes());
+	SBB sbb5 = getSBB(obj5.getMeshes());
+	SBB sbb6 = getSBB(obj6.getMeshes());
+	SBB sbb7 = getSBB(obj7.getMeshes());
+	SBB sbb8 = getSBB(obj9.getMeshes());
+
+
+
+
 	asigVert(30);
 	glm::vec3 cubePositions[] =
 	{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f),
@@ -275,49 +350,7 @@ void applicationLoop() {
 		glm::mat4 view = inputManager.getCameraFPS()->GetViewMatrix();
 		glm::mat4 projection;
 		projection = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
-
-		/*lightingShader.turnOn();
-		GLint viewPosLoc = lightingShader.getUniformLocation("viewPos");
-		glUniform3f(viewPosLoc, inputManager.getCameraFPS()->Position.x, inputManager.getCameraFPS()->Position.y,
-			inputManager.getCameraFPS()->Position.z);
-		// Set material properties
-		GLint matDiffuseLoc = lightingShader.getUniformLocation(
-			"material.diffuse");
-		GLint matSpecularLoc = lightingShader.getUniformLocation(
-			"material.specular");
-		GLint matShineLoc = lightingShader.getUniformLocation(
-			"material.shininess");
-		glUniform1i(matDiffuseLoc, 0);
-		glUniform1i(matSpecularLoc, 1);
-		glUniform1f(matShineLoc, 32.0f);
-		// Set lights properties
-		GLint lightAmbientLoc = lightingShader.getUniformLocation(
-			"light.ambient");
-		GLint lightDiffuseLoc = lightingShader.getUniformLocation(
-			"light.diffuse");
-		GLint lightSpecularLoc = lightingShader.getUniformLocation(
-			"light.specular");
-		GLint lightPosLoc = lightingShader.getUniformLocation("light.position");
-		glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f);
-		glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f); // Let's darken the light a bit to fit the scene
-		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
-		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
-		// Get the uniform locations
-		GLint modelLoc = lightingShader.getUniformLocation("model");
-		GLint viewLoc = lightingShader.getUniformLocation("view");
-		GLint projLoc = lightingShader.getUniformLocation("projection");
-		// Pass the matrices to the shader
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-		// Draw a sphere
-		glm::mat4 model;
-		model = glm::scale(model, glm::vec3(0.5, 0.5, 0.5));
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		textureDifuse.bind(GL_TEXTURE0);
-		sp2.render();
-		//modelo1.render(&lightingShader);
-		lightingShader.turnOff();
-		*/
+		
 
 		cubemapShader.turnOn();
 
@@ -370,7 +403,7 @@ void applicationLoop() {
 		GLuint viewPosLoc = envCubeShader.getUniformLocation("viewPos");
 		glUniform3fv(viewPosLoc,1, glm::value_ptr(inputManager.getCameraFPS()->Position));
 
-		modelo1.render(&envCubeShader);
+		//	modelo1.render(&envCubeShader);
 
 		envCubeShader.turnOff();
 
@@ -418,7 +451,181 @@ void applicationLoop() {
 			edificio[i].render(&modShader);
 		}
 
+		//Modelo 
+		glm::mat4 model1;
+		model1 = glm::translate(model1, glm::vec3(5.0f,0.0, 5.0f));
+		model1 = glm::scale(model1, glm::vec3(0.8f, 0.8f, 0.8f));
+		//model1 = glm::rotate(model1, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
+		obj1.render(&modShader);
+
+
+
+		//Modelo 
+		glm::mat4 model2;
+
+		model2 = glm::rotate(model2, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model2 = glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f));
+		//model2 = glm::translate(model2, glm::vec3(5.0f, -1.75f, 0.0f + inputManager.getAvanza()));
+		model2 = glm::scale(model2, glm::vec3(0.01f, 0.01f, 0.01f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
+		obj2.render(&modShader);
+		//inputManager.camera_look_at = glm::vec4(glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(0.0, 0.0, inputManager.getAvanza(), 1.0f));
+
+
+
+		//Modelo 
+		glm::mat4 model3;
+		model3 = glm::translate(model3, glm::vec3(-6.0f,2.5f, -5.0f));
+		model3 = glm::scale(model3, glm::vec3(0.05f, 0.05f, 0.05f));
+		model3 = glm::rotate(model3, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
+		obj3.render(&modShader);
+
+		//Modelo 
+		glm::mat4 model4;
+		model4 = glm::translate(model4, glm::vec3(-5.0f,0.0f, 0.0f));
+		model4 = glm::scale(model4, glm::vec3(0.03f, 0.03f, 0.03f));
+		model4 = glm::rotate(model4, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model4));
+		obj4.render(&modShader);
+
+		//Modelo 
+		glm::mat4 model5;
+		model5 = glm::translate(model5, glm::vec3(0.0f, 0.0f, -3.0f));
+		model5 = glm::scale(model5, glm::vec3(0.01f,0.01f,0.01f));
+		model5 = glm::rotate(model5, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model5));
+		obj5.render(&modShader);
+
+		//Modelo 
+		glm::mat4 model6;
+		model6 = glm::translate(model6, glm::vec3(5.0f,0.0f, 0.0f));
+		model6 = glm::scale(model6, glm::vec3(0.5f, 0.5f, 0.5f));
+		//model6 = glm::rotate(model6, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model6));
+		obj6.render(&modShader);
+
+		//Modelo 
+		glm::mat4 model7;
+		model7 = glm::translate(model7, glm::vec3(10.0f,0.0f, 0.0f));
+		model7 = glm::scale(model7, glm::vec3(0.5f, 0.5f, 0.5f));
+		//model7 = glm::rotate(model7, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model7));
+		obj7.render(&modShader);
+
+		/*
+		//Modelo 
+		glm::mat4 model8;
+		model8 = glm::translate(model8, glm::vec3(0.0f,0.0f, -4.0f));
+		model8 = glm::scale(model8, glm::vec3(0.01f, 0.01f, 0.01f));
+		//model8 = glm::rotate(model8, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model8));
+		obj8.render(&modShader);
+		*/
+
+		//Modelo 
+		glm::mat4 model9;
+		model9 = glm::translate(model9, glm::vec3(7.5f,0.0f, 0.0f));
+		//model9 = glm::scale(model9, glm::vec3(0.9f, 0.9f, 0.9f));
+		//model9 = glm::rotate(model9, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model9));
+		obj9.render(&modShader);
 		modShader.turnOff();
+
+	 
+		/*
+		//*******Colisiones****************
+
+		lightingShader.turnOn();
+		modelLoc = lightingShader.getUniformLocation("model");
+		viewLoc = lightingShader.getUniformLocation("view");
+		projLoc = lightingShader.getUniformLocation("projection");
+
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		model1 = glm::translate(model1, glm::vec3(sbb1.center.x, sbb1.center.y, sbb1.center.z));
+		model1 = glm::scale(model1,
+		glm::vec3(sbb1.ratio, sbb1.ratio, sbb1.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
+		e1.render();
+
+		model2 = glm::translate(model2, glm::vec3(sbb2.center.x, sbb2.center.y, sbb2.center.z));
+		model2 = glm::scale(model2,
+		glm::vec3(sbb2.ratio, sbb2.ratio, sbb2.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
+		e1.render();
+
+		model3 = glm::translate(model3, glm::vec3(sbb3.center.x, sbb3.center.y, sbb3.center.z));
+		model3 = glm::scale(model3,
+		glm::vec3(sbb3.ratio, sbb3.ratio, sbb3.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
+		e1.render();
+
+		model4 = glm::translate(model4, glm::vec3(sbb4.center.x, sbb4.center.y, sbb4.center.z));
+		model4 = glm::scale(model4,
+		glm::vec3(sbb4.ratio, sbb4.ratio, sbb4.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model4));
+		e1.render();
+
+		model5 = glm::translate(model5, glm::vec3(sbb5.center.x, sbb5.center.y, sbb5.center.z));
+		model5 = glm::scale(model5,
+		glm::vec3(sbb5.ratio, sbb5.ratio, sbb5.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model5));
+		e1.render();
+
+		model6 = glm::translate(model6, glm::vec3(sbb6.center.x, sbb6.center.y, sbb6.center.z));
+		model6 = glm::scale(model6,
+		glm::vec3(sbb6.ratio, sbb6.ratio, sbb6.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model6));
+		e1.render();
+
+		model7 = glm::translate(model7, glm::vec3(sbb7.center.x, sbb7.center.y, sbb7.center.z));
+		model7 = glm::scale(model7,
+		glm::vec3(sbb7.ratio, sbb7.ratio, sbb7.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model7));
+		e1.render();
+
+		model9 = glm::translate(model9, glm::vec3(sbb8.center.x, sbb8.center.y, sbb8.center.z));
+		model9 = glm::scale(model9,
+		glm::vec3(sbb8.ratio, sbb8.ratio, sbb8.ratio));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model9));
+		e1.render();
+
+		lightingShader.turnOff();
+
+
+		// Render the light sphere model
+		lampShader.turnOn();
+		// Create transformations
+		modelLoc = lampShader.getUniformLocation("model");
+		viewLoc = lampShader.getUniformLocation("view");
+		projLoc = lampShader.getUniformLocation("projection");
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+		glm::mat4 model10;
+		model10=glm::translate(glm::mat4(), lightPos);
+		model10=glm::scale(model10, glm::vec3(0.2, 0.2, 0.2));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model10));
+		e1.render();
+		lampShader.turnOff();
+
+
+		// For test collision sphere vs sphere
+		SBB s1, s2;
+		s1.center = glm::vec3(model1 * glm::vec4(0, 0, 0, 1));
+		s1.ratio = sbb1.ratio * 0.2f;
+		s2.center = glm::vec3(model2 * glm::vec4(0, 0, 0, 1));
+		s2.ratio = sbb2.ratio * 0.8f;
+		if (testSphereSphereIntersection(s1, s2))
+		std::cout << "Model collision:" << std::endl;
+
+		*/
+
 
 		//Creacion del piso
 
@@ -461,8 +668,8 @@ void applicationLoop() {
 		shader.turnOff();
 
 		//Dibujo de los edificios
-
 		
+
 
 		//Creacion del sol y su giro
 
