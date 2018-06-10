@@ -407,15 +407,41 @@ void applicationLoop() {
 
 		envCubeShader.turnOff();
 
-		modShader.turnOn();
+		lightingShader.turnOn();
+		viewPosLoc = lightingShader.getUniformLocation("viewPos");
+		glUniform3f(viewPosLoc, inputManager.getCameraFPS()->Position.x, inputManager.getCameraFPS()->Position.y,
+			inputManager.getCameraFPS()->Position.z);
 
+		// Set material properties
+		GLint matDiffuseLoc = lightingShader.getUniformLocation(
+			"material.diffuse");
+		GLint matSpecularLoc = lightingShader.getUniformLocation(
+			"material.specular");
+		GLint matShineLoc = lightingShader.getUniformLocation(
+			"material.shininess");
+		glUniform1i(matDiffuseLoc, 0);
+		glUniform1i(matSpecularLoc, 1);
+		glUniform1f(matShineLoc, 32.0f);
+
+		// Set lights properties
+		GLint lightAmbientLoc = lightingShader.getUniformLocation(
+			"light.ambient");
+		GLint lightDiffuseLoc = lightingShader.getUniformLocation(
+			"light.diffuse");
+		GLint lightSpecularLoc = lightingShader.getUniformLocation(
+			"light.specular");
+		GLint lightPosLoc = lightingShader.getUniformLocation("light.position");
+		glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f);
+		glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f); // Let's darken the light a bit to fit the scene
+		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
 		
 		glm::mat4 view2 = inputManager.getCameraFPS()->GetViewMatrix();
 		glm::mat4 projection2 = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 		// Get the uniform locations
-		GLint modelLoc2 = modShader.getUniformLocation("model");
-		GLint viewLoc2 = modShader.getUniformLocation("view");
-		GLint projLoc2 = modShader.getUniformLocation("projection");
+		GLint modelLoc2 = lightingShader.getUniformLocation("model");
+		GLint viewLoc2 = lightingShader.getUniformLocation("view");
+		GLint projLoc2 = lightingShader.getUniformLocation("projection");
 		// Pass the matrices to the shader
 		glUniformMatrix4fv(viewLoc2, 1, GL_FALSE, glm::value_ptr(view2));
 		glUniformMatrix4fv(projLoc2, 1, GL_FALSE, glm::value_ptr(projection2));
@@ -448,7 +474,7 @@ void applicationLoop() {
 				model2 = glm::scale(model2, glm::vec3(0.005f, 0.005f, 0.005f));
 			}
 			glUniformMatrix4fv(modelLoc2, 1, GL_FALSE, glm::value_ptr(model2));
-			edificio[i].render(&modShader);
+			edificio[i].render(&lightingShader);
 		}
 
 		//Modelo 
@@ -457,7 +483,7 @@ void applicationLoop() {
 		model1 = glm::scale(model1, glm::vec3(0.8f, 0.8f, 0.8f));
 		//model1 = glm::rotate(model1, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
-		obj1.render(&modShader);
+		obj1.render(&lightingShader);
 
 
 
@@ -469,7 +495,7 @@ void applicationLoop() {
 		//model2 = glm::translate(model2, glm::vec3(5.0f, -1.75f, 0.0f + inputManager.getAvanza()));
 		model2 = glm::scale(model2, glm::vec3(0.01f, 0.01f, 0.01f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
-		obj2.render(&modShader);
+		obj2.render(&lightingShader);
 		//inputManager.camera_look_at = glm::vec4(glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(0.0, 0.0, inputManager.getAvanza(), 1.0f));
 
 
@@ -480,7 +506,7 @@ void applicationLoop() {
 		model3 = glm::scale(model3, glm::vec3(0.05f, 0.05f, 0.05f));
 		model3 = glm::rotate(model3, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
-		obj3.render(&modShader);
+		obj3.render(&lightingShader);
 
 		//Modelo 
 		glm::mat4 model4;
@@ -488,7 +514,7 @@ void applicationLoop() {
 		model4 = glm::scale(model4, glm::vec3(0.03f, 0.03f, 0.03f));
 		model4 = glm::rotate(model4, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model4));
-		obj4.render(&modShader);
+		obj4.render(&lightingShader);
 
 		//Modelo 
 		glm::mat4 model5;
@@ -496,7 +522,7 @@ void applicationLoop() {
 		model5 = glm::scale(model5, glm::vec3(0.01f,0.01f,0.01f));
 		model5 = glm::rotate(model5, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model5));
-		obj5.render(&modShader);
+		obj5.render(&lightingShader);
 
 		//Modelo 
 		glm::mat4 model6;
@@ -504,7 +530,7 @@ void applicationLoop() {
 		model6 = glm::scale(model6, glm::vec3(0.5f, 0.5f, 0.5f));
 		//model6 = glm::rotate(model6, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model6));
-		obj6.render(&modShader);
+		obj6.render(&lightingShader);
 
 		//Modelo 
 		glm::mat4 model7;
@@ -512,7 +538,7 @@ void applicationLoop() {
 		model7 = glm::scale(model7, glm::vec3(0.5f, 0.5f, 0.5f));
 		//model7 = glm::rotate(model7, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model7));
-		obj7.render(&modShader);
+		obj7.render(&lightingShader);
 
 		/*
 		//Modelo 
@@ -530,8 +556,8 @@ void applicationLoop() {
 		//model9 = glm::scale(model9, glm::vec3(0.9f, 0.9f, 0.9f));
 		//model9 = glm::rotate(model9, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model9));
-		obj9.render(&modShader);
-		modShader.turnOff();
+		obj9.render(&lightingShader);
+		lightingShader.turnOff();
 
 	 
 		/*
