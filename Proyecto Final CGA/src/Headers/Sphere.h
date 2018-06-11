@@ -21,6 +21,7 @@ public:
 	void init();
 	void load();
 	void render();
+	void render1();
 	virtual ~Sphere();
 private:
 	std::vector<VertexColor> vertexC;
