@@ -79,6 +79,10 @@ glm::vec3 *posPiso;
 int screenWidth;
 int screenHeight;
 
+float avanzax;
+float avanzaz;
+float giro;
+
 GLFWwindow * window;
 InputManager inputManager;
 double deltaTime;
@@ -160,7 +164,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	e1.init();
 	e1.load();
 
-	
+
 
 
 	modelo1.loadModel("../objects/cyborg/cyborg.obj");
@@ -433,7 +437,7 @@ void applicationLoop() {
 		glUniformMatrix4fv(projLoc3, 1, GL_FALSE, glm::value_ptr(projection3));
 
 		glm::mat4 model11;
-		model11 = glm::translate(model11, glm::vec3(lightPos.x, -30* trasladoSen, -30 * trasladoCos));
+		model11 = glm::translate(model11, glm::vec3(lightPos.x, -30 * trasladoSen, -30 * trasladoCos));
 		model11 = glm::scale(model11, glm::vec3(0.2, 0.2, 0.2));
 		glUniformMatrix4fv(modelLoc3, 1, GL_FALSE, glm::value_ptr(model11));
 		luna.render();
@@ -444,7 +448,7 @@ void applicationLoop() {
 		glUniform3f(viewPosLoc, inputManager.getCameraFPS()->Position.x, inputManager.getCameraFPS()->Position.y,
 			inputManager.getCameraFPS()->Position.z);
 		/*glUniform3f(viewPosLoc, 0.0f, 60 * trasladoSen,
-			60 * trasladoSen);*/
+		60 * trasladoSen);*/
 
 		// Set material properties
 		GLint matDiffuseLoc = lightingShader.getUniformLocation(
@@ -482,9 +486,11 @@ void applicationLoop() {
 
 		for (GLuint i = 0; i < 5; i++) {
 			glm::mat4 model2;
+
 			if (i == 0) {
 				model2 = glm::translate(model2, posPiso[500]);
 				model2 = glm::scale(model2, glm::vec3(0.8f, 0.8f, 0.8f));
+				
 
 			}
 			if (i == 1) {
@@ -524,19 +530,19 @@ void applicationLoop() {
 		//Modelo 
 		glm::mat4 model2;
 
-		model2 = glm::rotate(model2, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		//model2 = glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f));
-		//model2 = glm::translate(model2, glm::vec3(5.0f, -1.75f, 0.0f + inputManager.getAvanza()));
+		model2 = glm::rotate(model2, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model2 = glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f));
+		model2 = glm::translate(model2, glm::vec3(1.0f+ inputManager.getAvanza(),0.0f, 5.0f + inputManager.getAvanza1()));
 		model2 = glm::scale(model2, glm::vec3(0.01f, 0.01f, 0.01f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
 		obj2.render(&lightingShader);
-		//inputManager.camera_look_at = glm::vec4(glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(0.0, 0.0, inputManager.getAvanza(), 1.0f));
+		inputManager.camera_look_at = glm::vec4(glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(0.0, 0.0, inputManager.getAvanza(), 1.0f));
 
 
 
 		//Modelo 
 		glm::mat4 model3;
-		model3 = glm::translate(model3, glm::vec3(-6.0f, 2.5f, -5.0f));
+		model3 = glm::translate(model3, glm::vec3(-18.0f, 2.5f, -5.0f));
 		model3 = glm::scale(model3, glm::vec3(0.05f, 0.05f, 0.05f));
 		model3 = glm::rotate(model3, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model3));
@@ -586,7 +592,7 @@ void applicationLoop() {
 
 		//Modelo 
 		glm::mat4 model9;
-		model9 = glm::translate(model9, glm::vec3(7.5f, 0.0f, 0.0f));
+		model9 = glm::translate(model9, glm::vec3(25.0f, 0.0f, 0.0f));
 		//model9 = glm::scale(model9, glm::vec3(0.9f, 0.9f, 0.9f));
 		//model9 = glm::rotate(model9, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model9));
@@ -605,7 +611,7 @@ void applicationLoop() {
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-		
+
 		model1 = glm::translate(model1, glm::vec3(sbb1.center.x, sbb1.center.y, sbb1.center.z));
 		model1 = glm::scale(model1,
 			glm::vec3(sbb1.ratio, sbb1.ratio, sbb1.ratio));
@@ -655,7 +661,17 @@ void applicationLoop() {
 		e1.render1();
 
 		lampShader.turnOff();
-		
+
+		// For test collision sphere vs sphere
+		SBB s1, s2;
+		s1.center = glm::vec3(model1 * glm::vec4(0, 0, 0, 1));
+		s1.ratio = sbb1.ratio * 0.2f;
+		s2.center = glm::vec3(model2 * glm::vec4(0, 0, 0, 1));
+		s2.ratio = sbb2.ratio * 0.8f;
+		if (testSphereSphereIntersection(s1, s2))
+			avanzax = 0.0;
+			avanzaz = 0.0;
+			std::cout << "Model collision:" << std::endl;
 
 
 		//Creacion del piso
