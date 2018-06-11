@@ -69,7 +69,8 @@ enum InputCodes {
 	y = 121,
 	Y = 89,
 	z = 122,
-	Z = 90
+	Z = 90,
+	
 };
 
 enum MouseButtonIndex {
@@ -82,9 +83,15 @@ enum State {
 
 class InputManager {
 public:
+	glm::vec3 camera_look_at;
+	float roty;
+	float avanzax;
+	float avanzaz;
 
 	InputManager() :
-		lastMousePos(glm::ivec2(0.0)) {
+		lastMousePos(glm::ivec2(0.0)), deltax(0), deltay(0), scrollYoffset(
+			0), cameraPos(glm::vec3(0.0f, 0.0f, 3.0f)), yaw(0), pitch(
+				20), roll(0), distanceFromPlayer(5), angleAroundPlayer(0) {
 		mouseButtomState = new bool[3];
 		keyState = new bool[1024];
 		for (int i = 0; i < 3; i++)
@@ -92,6 +99,12 @@ public:
 		for (int i = 0; i < 1024; i++)
 			keyState[i] = false;
 		cameraFPS = new CameraFPS(glm::vec3(0.0, 2.0, 3.0));
+
+		camera_look_at = glm::vec3(0, 0, 0);
+		roty = 0.0;
+		avanzax = 0.0;
+		avanzaz = 0.0;
+
 	}
 
 	~InputManager() {
@@ -123,10 +136,47 @@ public:
 		return this->cameraFPS;
 	}
 
+	glm::vec3 getCameraPos() {
+		return cameraPos;
+	}
+
+	float getPitch() const {
+		return pitch;
+	}
+
+	float getRoll() const {
+		return roll;
+	}
+
+	float getYaw() const {
+		return yaw;
+	}
+
+	float getScrollYoffset() const {
+		return scrollYoffset;
+	}
+
+	float getAvanza() const {
+		return avanzax;
+	}
+	float getAvanza1() const {
+		return avanzaz;
+	}
 protected:
 	glm::ivec2 lastMousePos;
 	bool * mouseButtomState;
 	bool * keyState;
+	float deltax;
+	float deltay;
+	float scrollYoffset;
+
+	glm::vec3 cameraPos;
+	float yaw;
+	float pitch;
+	float roll;
+
+	float distanceFromPlayer;
+	float angleAroundPlayer;
 
 	CameraFPS * cameraFPS;
 
