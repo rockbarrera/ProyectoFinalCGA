@@ -32,6 +32,8 @@ InputCodes InputManager::toApplicationKey(int key) {
 		return InputCodes::X;
 	case 90:
 		return InputCodes::Z;
+	case 85:
+			return InputCodes::u;
 	}
 }
 

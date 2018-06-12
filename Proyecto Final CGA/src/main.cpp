@@ -28,6 +28,38 @@
 
 #include "Headers\collision.h"
 
+// OpenAL include
+#include <AL/alut.h>
+
+#define NUM_BUFFERS 3
+#define NUM_SOURCES 3
+#define NUM_ENVIRONMENTS 1
+
+// OpenAL config
+ALfloat listenerPos[] = { 0.0, 0.0, 4.0 };
+ALfloat listenerVel[] = { 0.0, 0.0, 0.0 };
+ALfloat listenerOri[] = { 0.0, 0.0, 1.0, 0.0, 1.0, 0.0 };
+
+ALfloat source0Pos[] = { -2.0, 0.0, 0.0 };
+ALfloat source0Vel[] = { 0.0, 0.0, 0.0 };
+
+ALfloat source1Pos[] = { 2.0, 0.0, 0.0 };
+ALfloat source1Vel[] = { 0.0, 0.0, 0.0 };
+
+ALfloat source2Pos[] = { 0.0, 0.0, -4.0 };
+ALfloat source2Vel[] = { 0.0, 0.0, 0.0 };
+
+ALuint buffer[NUM_BUFFERS];
+ALuint source[NUM_SOURCES];
+ALuint environment[NUM_ENVIRONMENTS];
+
+ALsizei size, freq;
+ALenum format;
+ALvoid *data;
+int ch;
+ALboolean loop;
+
+
 Sphere sp(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
 Sphere sp2(1.5, 50, 50, MODEL_MODE::VERTEX_LIGHT_TEXTURE);
 Sphere luna(1.5, 50, 50, MODEL_MODE::VERTEX_COLOR);
@@ -82,6 +114,9 @@ int screenHeight;
 float avanzax;
 float avanzaz;
 float giro;
+GLfloat mov = 0.0;
+bool recorrido1;
+bool recorrido2;
 
 GLFWwindow * window;
 InputManager inputManager;
@@ -183,7 +218,7 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 	obj5.loadModel("../objects/Hombre1/Man N151016.3ds");
 	obj6.loadModel("../objects/gato/Cat.obj");
 	obj7.loadModel("../objects/perro/Dog.obj");
-	//	obj8.loadModel("../objects/Mujer3/Woman 1 N150408.3ds");
+	obj8.loadModel("../objects/Nubes/Cloud3.fbx");
 	obj9.loadModel("../objects/casa/Tree/Tree.obj");
 
 	modShader.initialize("../Shaders/model.vs", "../Shaders/model.fs");
@@ -229,6 +264,61 @@ void init(int width, int height, std::string strTitle, bool bFullScreen) {
 
 	texturaPlano = new Texture(GL_TEXTURE_2D, "../Textures/ca.jpg");
 	texturaPlano->load();
+
+	// OpenAL init
+	alutInit(0, NULL);
+
+	alListenerfv(AL_POSITION, listenerPos);
+	alListenerfv(AL_VELOCITY, listenerVel);
+	alListenerfv(AL_ORIENTATION, listenerOri);
+
+	alGetError(); // clear any error messages
+
+	if (alGetError() != AL_NO_ERROR) {
+		printf("- Error creating buffers !!\n");
+		exit(1);
+	}
+	else {
+		printf("init() - No errors yet.");
+	}
+
+	// Generate buffers, or else no sound will happen!
+	alGenBuffers(NUM_BUFFERS, buffer);
+
+	buffer[0] = alutCreateBufferFromFile("../sounds/Saint seiya_violin_2.wav");
+	//buffer[0] = alutCreateBufferHelloWorld();
+
+	alGetError(); /* clear error */
+	alGenSources(NUM_SOURCES, source);
+
+	if (alGetError() != AL_NO_ERROR) {
+		printf("- Error creating sources !!\n");
+		exit(2);
+	}
+	else {
+		printf("init - no errors after alGenSources\n");
+	}
+
+	alSourcef(source[0], AL_PITCH, 1.0f);
+	alSourcef(source[0], AL_GAIN, 1.0f);
+	alSourcefv(source[0], AL_POSITION, source0Pos);
+	alSourcefv(source[0], AL_VELOCITY, source0Vel);
+	alSourcei(source[0], AL_BUFFER, buffer[0]);
+	alSourcei(source[0], AL_LOOPING, AL_TRUE);
+	alSourcef(source[0], AL_MAX_DISTANCE, 1200);
+
+	/*alSourcef(source[1], AL_PITCH, 1.0f);
+	alSourcef(source[1], AL_GAIN, 1.0f);
+	alSourcefv(source[1], AL_POSITION, source1Pos);
+	alSourcefv(source[1], AL_VELOCITY, source1Vel);
+	alSourcei(source[1], AL_BUFFER, buffer[1]);
+	alSourcei(source[1], AL_LOOPING, AL_TRUE);
+	alSourcef(source[2], AL_PITCH, 1.0f);
+	alSourcef(source[2], AL_GAIN, 1.0f);
+	alSourcefv(source[2], AL_POSITION, source2Pos);
+	alSourcefv(source[2], AL_VELOCITY, source2Vel);
+	alSourcei(source[2], AL_BUFFER, buffer[2]);
+	alSourcei(source[2], AL_LOOPING, AL_TRUE);*/
 
 }
 
@@ -286,7 +376,8 @@ void asigVert(int A) {
 	posPiso = new glm::vec3[B*B];
 	for (int i = 0; i < B; i++) {
 		for (int j = 0; j < B; j++)
-			posPiso[B*i + j] = glm::vec3((float)(-A + i), 0.0f, (float)(-A + j));
+			posPiso[B*i + j] = glm::vec3((float)(-A + i), 0.0f,
+				(float)(-A + j));
 	}
 }
 
@@ -307,12 +398,6 @@ void applicationLoop() {
 
 
 	asigVert(30);
-	glm::vec3 cubePositions[] =
-	{ glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f, 0.0f, 1.0f),
-		glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, 1.0f),
-		glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f),
-		glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f, 0.0f, -1.0f),
-		glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(1.0f, 0.0f, -1.0f) };
 
 	glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 	double lastTime = TimeManager::Instance().GetTime();
@@ -392,6 +477,7 @@ void applicationLoop() {
 		GLfloat trasladoSen = (sin(0.1*timeValue));
 		GLfloat trasladoCos = (cos(0.1*timeValue));
 
+
 		glm::mat4 view3 = inputManager.getCameraFPS()->GetViewMatrix();
 		glm::mat4 projection3 = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
 
@@ -423,12 +509,6 @@ void applicationLoop() {
 		trasladoSen = (sin(0.1*timeValue));
 		trasladoCos = (cos(0.1*timeValue));
 
-		/*
-		offset_y = lampShader.getUniformLocation("offset_y");
-		glUniform1f(offset_y, -60 * trasladoSen);
-		offset_z = lampShader.getUniformLocation("offset_z");
-		glUniform1f(offset_z, -60 * trasladoCos);
-		*/
 		modelLoc3 = lampShader.getUniformLocation("model");
 		viewLoc3 = lampShader.getUniformLocation("view");
 		projLoc3 = lampShader.getUniformLocation("projection");
@@ -445,10 +525,9 @@ void applicationLoop() {
 
 		lightingShader.turnOn();
 		viewPosLoc = lightingShader.getUniformLocation("viewPos");
-		glUniform3f(viewPosLoc, inputManager.getCameraFPS()->Position.x, inputManager.getCameraFPS()->Position.y,
-			inputManager.getCameraFPS()->Position.z);
-		/*glUniform3f(viewPosLoc, 0.0f, 60 * trasladoSen,
-		60 * trasladoSen);*/
+		/*glUniform3f(viewPosLoc, inputManager.getCameraFPS()->Position.x, inputManager.getCameraFPS()->Position.y,
+			inputManager.getCameraFPS()->Position.z);*/
+		glUniform3f(viewPosLoc, lightPos.x, 30 * trasladoSen, 30 * trasladoCos);
 
 		// Set material properties
 		GLint matDiffuseLoc = lightingShader.getUniformLocation(
@@ -517,9 +596,42 @@ void applicationLoop() {
 			edificio[i].render(&lightingShader);
 		}
 
+		for (GLuint i = 0; i < 5; i++) {
+			glm::mat4 model20;
+
+			if (i == 0) {
+				model20 = glm::translate(model20, posPiso[500]);
+				model20 = glm::scale(model20, glm::vec3(0.8f, 0.8f, 0.8f));
+
+
+			}
+			if (i == 1) {
+				model20 = glm::translate(model20, glm::vec3(25.0f, 0.0f, 20.0f));
+				model20 = glm::rotate(model20, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+				model20 = glm::scale(model20, glm::vec3(0.009f, 0.009f, 0.009f));
+			}
+			if (i == 2) {
+				model20 = glm::translate(model20, glm::vec3(2.0f, 0.0f, 12.0f));
+				model20 = glm::scale(model20, glm::vec3(0.01f, 0.01f, 0.01f));
+			}
+			if (i == 3) {
+				model20 = glm::translate(model20, glm::vec3(-30.0f, 0.0f, 20.0f));
+				model20 = glm::rotate(model20, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+				model20 = glm::scale(model20, glm::vec3(0.1f, 0.1f, 0.1f));
+			}
+			if (i == 4) {
+				model20 = glm::translate(model20, glm::vec3(-18.0f, 0.0f, 22.0f));
+				model20 = glm::translate(model20, glm::vec3(0.0f, 5.8f, 0.0f));
+				model20 = glm::rotate(model20, 90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+				model20 = glm::scale(model20, glm::vec3(0.005f, 0.005f, 0.005f));
+			}
+			glUniformMatrix4fv(modelLoc2, 1, GL_FALSE, glm::value_ptr(model20));
+			edificio[i].render(&lightingShader);
+		}
+
 		//Modelo 
 		glm::mat4 model1;
-		model1 = glm::translate(model1, glm::vec3(5.0f, 0.0, 5.0f));
+		model1 = glm::translate(model1, glm::vec3(5.0f+mov, 0.0, 5.0f));
 		model1 = glm::scale(model1, glm::vec3(0.8f, 0.8f, 0.8f));
 		//model1 = glm::rotate(model1, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
@@ -532,11 +644,13 @@ void applicationLoop() {
 
 		model2 = glm::rotate(model2, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		model2 = glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f));
-		model2 = glm::translate(model2, glm::vec3(1.0f+ inputManager.getAvanza(),0.0f, 5.0f + inputManager.getAvanza1()));
+		model2 = glm::translate(model2, glm::vec3(1.0f+ inputManager.getAvanza(),0.0f,
+			5.0f + inputManager.getAvanza1()));
 		model2 = glm::scale(model2, glm::vec3(0.01f, 0.01f, 0.01f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
 		obj2.render(&lightingShader);
-		inputManager.camera_look_at = glm::vec4(glm::rotate(glm::radians(inputManager.roty), glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(0.0, 0.0, inputManager.getAvanza(), 1.0f));
+		inputManager.camera_look_at = glm::vec4(glm::rotate(glm::radians(inputManager.roty),
+			glm::vec3(0.0f, 1.0f, 0.0f)) * glm::vec4(0.0, 0.0, inputManager.getAvanza(), 1.0f));
 
 
 
@@ -550,7 +664,7 @@ void applicationLoop() {
 
 		//Modelo 
 		glm::mat4 model4;
-		model4 = glm::translate(model4, glm::vec3(-5.0f, 0.0f, 0.0f));
+		model4 = glm::translate(model4, glm::vec3(-5.0f, 0.0f, 0.0f+mov));
 		model4 = glm::scale(model4, glm::vec3(0.03f, 0.03f, 0.03f));
 		model4 = glm::rotate(model4, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model4));
@@ -558,7 +672,7 @@ void applicationLoop() {
 
 		//Modelo 
 		glm::mat4 model5;
-		model5 = glm::translate(model5, glm::vec3(0.0f, 0.0f, -3.0f));
+		model5 = glm::translate(model5, glm::vec3(0.0f+mov, 0.0f, -3.0f));
 		model5 = glm::scale(model5, glm::vec3(0.01f, 0.01f, 0.01f));
 		model5 = glm::rotate(model5, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model5));
@@ -566,7 +680,7 @@ void applicationLoop() {
 
 		//Modelo 
 		glm::mat4 model6;
-		model6 = glm::translate(model6, glm::vec3(5.0f, 0.0f, 0.0f));
+		model6 = glm::translate(model6, glm::vec3(5.0f, 0.0f, 0.0f+mov));
 		model6 = glm::scale(model6, glm::vec3(0.5f, 0.5f, 0.5f));
 		//model6 = glm::rotate(model6, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model6));
@@ -574,21 +688,60 @@ void applicationLoop() {
 
 		//Modelo 
 		glm::mat4 model7;
-		model7 = glm::translate(model7, glm::vec3(10.0f, 0.0f, 0.0f));
+		model7 = glm::translate(model7, glm::vec3(10.0f+mov, 0.0f, 0.0f+mov));
 		model7 = glm::scale(model7, glm::vec3(0.5f, 0.5f, 0.5f));
 		//model7 = glm::rotate(model7, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model7));
 		obj7.render(&lightingShader);
 
-		/*
 		//Modelo
 		glm::mat4 model8;
-		model8 = glm::translate(model8, glm::vec3(0.0f,0.0f, -4.0f));
-		model8 = glm::scale(model8, glm::vec3(0.01f, 0.01f, 0.01f));
+		//model8 = glm::translate(model8, glm::vec3(mov, 7.50f, -4.0f));
+		model8 = glm::translate(model8, glm::vec3(10*trasladoSen, 10.0f, 5*trasladoCos));
+		model8 = glm::scale(model8, glm::vec3(0.05f, 0.05f, 0.05f));
 		//model8 = glm::rotate(model8, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model8));
-		obj8.render(&modShader);
-		*/
+		obj8.render(&lightingShader);
+
+		//Modelo
+		glm::mat4 model15;
+		//model8 = glm::translate(model8, glm::vec3(mov, 7.50f, -4.0f));
+		model15 = glm::translate(model15, glm::vec3(-15.0f, 10.0f, -15.0f));
+		model15 = glm::translate(model15, glm::vec3(10 * trasladoSen, 10.0f, 5 * trasladoCos));
+		model15 = glm::scale(model15, glm::vec3(0.05f, 0.05f, 0.05f));
+		//model8 = glm::rotate(model8, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model15));
+		obj8.render(&lightingShader);
+
+		//Modelo
+		glm::mat4 model16;
+		//model8 = glm::translate(model8, glm::vec3(mov, 7.50f, -4.0f));
+		model16 = glm::translate(model16, glm::vec3(15.0f, 10.0f, -15.0f));
+		model16 = glm::translate(model16, glm::vec3(10 * trasladoSen, 10.0f, 5 * trasladoCos));
+		model16 = glm::scale(model16, glm::vec3(0.05f, 0.05f, 0.05f));
+		//model8 = glm::rotate(model8, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model16));
+		obj8.render(&lightingShader);
+
+		//Modelo
+		glm::mat4 model17;
+		//model8 = glm::translate(model8, glm::vec3(mov, 7.50f, -4.0f));
+		model17 = glm::translate(model17, glm::vec3(10.0f, 10.0f, 5.0f));
+		model17 = glm::translate(model17, glm::vec3(10 * trasladoSen, 10.0f, 5 * trasladoCos));
+		model17 = glm::scale(model17, glm::vec3(0.05f, 0.05f, 0.05f));
+		//model8 = glm::rotate(model8, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model17));
+		obj8.render(&lightingShader);
+
+		//Modelo
+		glm::mat4 model18;
+		//model8 = glm::translate(model8, glm::vec3(mov, 7.50f, -4.0f));
+		model18 = glm::translate(model18, glm::vec3(10.0f, 10.0f,-7.50f));
+		model18 = glm::translate(model18, glm::vec3(10 * trasladoSen, 10.0f, 5 * trasladoCos));
+		model18 = glm::scale(model18, glm::vec3(0.05f, 0.05f, 0.05f));
+		//model8 = glm::rotate(model8, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model18));
+		obj8.render(&lightingShader);
 
 		//Modelo 
 		glm::mat4 model9;
@@ -668,11 +821,54 @@ void applicationLoop() {
 		s1.ratio = sbb1.ratio * 0.2f;
 		s2.center = glm::vec3(model2 * glm::vec4(0, 0, 0, 1));
 		s2.ratio = sbb2.ratio * 0.8f;
-		if (testSphereSphereIntersection(s1, s2))
+		if (testSphereSphereIntersection(s1, s2)){
 			avanzax = 0.0;
 			avanzaz = 0.0;
 			std::cout << "Model collision:" << std::endl;
+		}
 
+		lightingShader.turnOn();
+
+		viewPosLoc = lightingShader.getUniformLocation("viewPos");
+		/*glUniform3f(viewPosLoc, inputManager.getCameraFPS()->Position.x, inputManager.getCameraFPS()->Position.y,
+		inputManager.getCameraFPS()->Position.z);*/
+		glUniform3f(viewPosLoc, lightPos.x, -30 * trasladoSen, -30 * trasladoCos);
+
+		// Set material properties
+		matDiffuseLoc = lightingShader.getUniformLocation(
+			"material.diffuse");
+		matSpecularLoc = lightingShader.getUniformLocation(
+			"material.specular");
+		matShineLoc = lightingShader.getUniformLocation(
+			"material.shininess");
+		glUniform1i(matDiffuseLoc, 0);
+		glUniform1i(matSpecularLoc, 1);
+		glUniform1f(matShineLoc, 15.0f);
+
+		// Set lights properties
+		lightAmbientLoc = lightingShader.getUniformLocation(
+			"light.ambient");
+		lightDiffuseLoc = lightingShader.getUniformLocation(
+			"light.diffuse");
+		lightSpecularLoc = lightingShader.getUniformLocation(
+			"light.specular");
+		lightPosLoc = lightingShader.getUniformLocation("light.position");
+		glUniform3f(lightAmbientLoc, 0.2f, 0.2f, 0.2f);
+		glUniform3f(lightDiffuseLoc, 0.5f, 0.5f, 0.5f); // Let's darken the light a bit to fit the scene
+		glUniform3f(lightSpecularLoc, 1.0f, 1.0f, 1.0f);
+		glUniform3f(lightPosLoc, lightPos.x, lightPos.y, lightPos.z);
+
+		view2 = inputManager.getCameraFPS()->GetViewMatrix();
+		projection2 = glm::perspective(45.0f, (float)screenWidth / (float)screenHeight, 0.1f, 100.0f);
+		// Get the uniform locations
+		modelLoc2 = lightingShader.getUniformLocation("model");
+		viewLoc2 = lightingShader.getUniformLocation("view");
+		projLoc2 = lightingShader.getUniformLocation("projection");
+		// Pass the matrices to the shader
+		glUniformMatrix4fv(viewLoc2, 1, GL_FALSE, glm::value_ptr(view2));
+		glUniformMatrix4fv(projLoc2, 1, GL_FALSE, glm::value_ptr(projection2));
+
+		lightingShader.turnOff();
 
 		//Creacion del piso
 
@@ -714,9 +910,52 @@ void applicationLoop() {
 
 		shader.turnOff();
 
+		//Movimiento de las nubes
+
+		recorrido1 = true;
+		if (recorrido1) {
+
+			mov += 0.01;
+			if (mov >= 20) {
+				recorrido1 = false;
+				recorrido2 = true;
+			}
+		}
+		if (recorrido2) {
+			mov -= 0.01;
+			if (mov <= -15) {
+				recorrido2 = false;
+				recorrido1 = true;
+			}
+
+		}
+
 		//Dibujo de los edificio
 
 		glfwSwapBuffers(window);
+
+		source0Pos[0] = model[3].x;
+		source0Pos[1] = model[3].y;
+		source0Pos[2] = model[3].z;
+		alSourcefv(source[0], AL_POSITION, source0Pos);
+
+		listenerPos[0] = inputManager.getCameraFPS()->Position.x;
+		listenerPos[1] = inputManager.getCameraFPS()->Position.y;
+		listenerPos[2] = inputManager.getCameraFPS()->Position.z;
+		alListenerfv(AL_POSITION, listenerPos);
+
+		listenerOri[0] = inputManager.getCameraFPS()->Front.x;
+		listenerOri[1] = inputManager.getCameraFPS()->Front.y;
+		listenerOri[2] = inputManager.getCameraFPS()->Front.z;
+		listenerOri[3] = inputManager.getCameraFPS()->Up.x;
+		listenerOri[4] = inputManager.getCameraFPS()->Up.y;
+		listenerOri[5] = inputManager.getCameraFPS()->Up.z;
+		alListenerfv(AL_ORIENTATION, listenerOri);
+
+		if (inputManager.getKeyState()[InputCodes::u]) {
+			alSourcePlay(source[0]);
+		}
+
 	}
 }
 
